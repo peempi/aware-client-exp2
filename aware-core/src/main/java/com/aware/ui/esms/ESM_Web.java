@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -98,41 +99,77 @@ public class ESM_Web extends ESM_Question {
             webSettings.setJavaScriptEnabled(true);
             webSettings.setSupportZoom(true);
 
-            Button cancel_text = (Button) ui.findViewById(R.id.esm_cancel);
+//            Button cancel_text = (Button) ui.findViewById(R.id.esm_cancel);
+//            cancel_text.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    esm_dialog.cancel();
+//                }
+//            });
+//
+//            Button submit_text = (Button) ui.findViewById(R.id.esm_submit);
+//            submit_text.setText(getSubmitButton());
+//            submit_text.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    try {
+//                        if (getExpirationThreshold() > 0 && expire_monitor != null)
+//                            expire_monitor.cancel(true);
+//
+//                        ContentValues rowData = new ContentValues();
+//                        rowData.put(ESM_Provider.ESM_Data.ANSWER_TIMESTAMP, System.currentTimeMillis());
+//                        rowData.put(ESM_Provider.ESM_Data.ANSWER, "webpage-closed");
+//                        rowData.put(ESM_Provider.ESM_Data.STATUS, ESM.STATUS_ANSWERED);
+//
+//                        getActivity().getContentResolver().update(ESM_Provider.ESM_Data.CONTENT_URI, rowData, ESM_Provider.ESM_Data._ID + "=" + getID(), null);
+//
+//                        Intent answer = new Intent(ESM.ACTION_AWARE_ESM_ANSWERED);
+//                        answer.putExtra(ESM.EXTRA_ANSWER, rowData.getAsString(ESM_Provider.ESM_Data.ANSWER));
+//                        getActivity().sendBroadcast(answer);
+//
+//                        if (Aware.DEBUG) Log.d(Aware.TAG, "Answer:" + rowData.toString());
+//
+//                        esm_dialog.dismiss();
+//
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            });
+
+            // We are using top-corner exit button, so we drop those buttons for now
+            // click on dismiss button will activate a dialog, asking if you are sure to exit
+            Button cancel_text = (Button) ui.findViewById(R.id.exit_action);
             cancel_text.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    esm_dialog.cancel();
-                }
-            });
+                    final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                    alertDialogBuilder.setMessage("Do you want to exit survey this time?");
+                    alertDialogBuilder.setPositiveButton("Yes",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface arg0, int arg1) {
+                                    ContentValues rowData = new ContentValues();
+                                    rowData.put(ESM_Provider.ESM_Data.ANSWER_TIMESTAMP, System.currentTimeMillis());
+                                    rowData.put(ESM_Provider.ESM_Data.ANSWER, "webpage-closed");
+                                    rowData.put(ESM_Provider.ESM_Data.STATUS, ESM.STATUS_ANSWERED);
 
-            Button submit_text = (Button) ui.findViewById(R.id.esm_submit);
-            submit_text.setText(getSubmitButton());
-            submit_text.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-                        if (getExpirationThreshold() > 0 && expire_monitor != null)
-                            expire_monitor.cancel(true);
+                                    getActivity().getContentResolver().update(ESM_Provider.ESM_Data.CONTENT_URI, rowData, ESM_Provider.ESM_Data._ID + "=" + getID(), null);
 
-                        ContentValues rowData = new ContentValues();
-                        rowData.put(ESM_Provider.ESM_Data.ANSWER_TIMESTAMP, System.currentTimeMillis());
-                        rowData.put(ESM_Provider.ESM_Data.ANSWER, "webpage-closed");
-                        rowData.put(ESM_Provider.ESM_Data.STATUS, ESM.STATUS_ANSWERED);
+                                    Intent answer = new Intent(ESM.ACTION_AWARE_ESM_ANSWERED);
+                                    answer.putExtra(ESM.EXTRA_ANSWER, rowData.getAsString(ESM_Provider.ESM_Data.ANSWER));
+                                    getActivity().sendBroadcast(answer);
+                                    esm_dialog.dismiss();
+                                }
+                            }).setNegativeButton("No",new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
 
-                        getActivity().getContentResolver().update(ESM_Provider.ESM_Data.CONTENT_URI, rowData, ESM_Provider.ESM_Data._ID + "=" + getID(), null);
-
-                        Intent answer = new Intent(ESM.ACTION_AWARE_ESM_ANSWERED);
-                        answer.putExtra(ESM.EXTRA_ANSWER, rowData.getAsString(ESM_Provider.ESM_Data.ANSWER));
-                        getActivity().sendBroadcast(answer);
-
-                        if (Aware.DEBUG) Log.d(Aware.TAG, "Answer:" + rowData.toString());
-
-                        esm_dialog.dismiss();
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
                 }
             });
         } catch (JSONException e) {

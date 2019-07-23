@@ -43,9 +43,11 @@ import com.aware.Aware;
 import com.aware.Aware_Preferences;
 import com.aware.phone.ui.Aware_Activity;
 import com.aware.phone.ui.Aware_Join_Study;
+import com.aware.providers.Aware_Provider;
 import com.aware.ui.PermissionsHandler;
 import com.aware.utils.Https;
 import com.aware.utils.SSLManager;
+import com.aware.utils.Scheduler;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
@@ -64,6 +66,7 @@ public class Aware_Client extends Aware_Activity implements SharedPreferences.On
     public static boolean permissions_ok;
     private static Hashtable<Integer, Boolean> listSensorType;
     private static SharedPreferences prefs;
+    private  static SharedPreferences myPrefs;
 
     private static final ArrayList<String> REQUIRED_PERMISSIONS = new ArrayList<>();
     private static final Hashtable<String, Integer> optionalSensors = new Hashtable<>();
@@ -86,6 +89,7 @@ public class Aware_Client extends Aware_Activity implements SharedPreferences.On
         }
 
         prefs = getSharedPreferences("com.aware.phone", Context.MODE_PRIVATE);
+        myPrefs= getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
 
         optionalSensors.put(Aware_Preferences.STATUS_ACCELEROMETER, Sensor.TYPE_ACCELEROMETER);
         optionalSensors.put(Aware_Preferences.STATUS_SIGNIFICANT_MOTION, Sensor.TYPE_ACCELEROMETER);
@@ -150,6 +154,53 @@ public class Aware_Client extends Aware_Activity implements SharedPreferences.On
             whitelisting.setData(Uri.parse("package:" + getPackageName()));
             startActivity(whitelisting);
         }
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////
+        //MY CODE
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        if (!myPrefs.getBoolean("already_set", false) && myPrefs.getBoolean("already_booted", false)){
+            Toast toast = Toast.makeText(this, "Configuration copleted!", Toast.LENGTH_LONG);
+            Log.d("AAA", Aware_Provider.Aware_Device.DEVICE_ID);
+            toast.show();
+            Aware.joinStudy(getApplicationContext(), ESM_prompter.STUDY_URL);
+            Scheduler.Schedule emaScheduler = Scheduler.getSchedule(getApplicationContext(), "emaScheduler");
+            if(emaScheduler != null ){
+                Scheduler.removeSchedule(getApplicationContext(), "emaScheduler");
+            }
+
+            emaScheduler = new Scheduler.Schedule("emaScheduler");
+            try{
+                emaScheduler.setActionType(Scheduler.ACTION_TYPE_SERVICE)
+                        .setActionClass(getApplicationContext().getPackageName() + "/" + ESM_prompter.class.getName());
+
+                for(int i =9; i<23; ++i){
+                    emaScheduler.addHour(i);
+                }
+                emaScheduler.addMinute(12);
+                Scheduler.saveSchedule(getApplicationContext(), emaScheduler);
+                Aware.startScheduler(getApplicationContext());
+                //TODO: device ID to retrieve
+                Toast toast2 = Toast.makeText(this, Aware.getSetting(getApplicationContext(), Aware_Preferences.DEVICE_ID), Toast.LENGTH_LONG);
+                toast2.show();
+            } catch (Exception e){
+
+            }
+
+            myPrefs.edit()
+                    .putBoolean("already_set", true)
+                    .commit();
+
+            //A QUA
+
+        } else {
+            myPrefs.edit()
+                    .putBoolean("already_booted", true)
+                    .commit();
+        }
+
+
+
+
     }
 
     @Override

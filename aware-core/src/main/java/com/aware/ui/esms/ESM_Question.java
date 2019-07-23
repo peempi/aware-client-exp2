@@ -39,6 +39,8 @@ public class ESM_Question extends DialogFragment {
     public static final String esm_instructions = "esm_instructions";
     public static final String esm_submit = "esm_submit";
     public static final String esm_expiration_threshold = "esm_expiration_threshold";
+    public static final String id = "id";
+    public static final String esm_time_gen = "time_gen";
     public static final String esm_notification_timeout = "esm_notification_timeout";
     public static final String esm_notification_retry = "esm_notification_retry";
     public static final String esm_replace_queue = "esm_replace_queue";
@@ -110,6 +112,17 @@ public class ESM_Question extends DialogFragment {
         this.esm.put(esm_instructions, instructions);
         return this;
     }
+
+    public ESM_Question setUUID(String uuid) throws JSONException {
+        this.esm.put(id, uuid);
+        return this;
+    }
+
+    public ESM_Question setTimeGen(String time) throws JSONException {
+        this.esm.put(esm_time_gen, time);
+        return this;
+    }
+
 
     public String getSubmitButton() throws JSONException {
         if (!this.esm.has(esm_submit)) {
