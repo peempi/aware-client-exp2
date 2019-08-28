@@ -154,6 +154,7 @@
             </intent-filter>
         </receiver>
 
+        <service android:name=".ESM_prompter" android:exported="true" android:enabled="true"/>
     </application>
 
 </manifest>

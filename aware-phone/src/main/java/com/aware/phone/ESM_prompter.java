@@ -26,6 +26,8 @@ public class ESM_prompter extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
+        Log.d("BBB", "Service on Start Command");
+
         String device_id = Aware.getSetting(getApplicationContext(), Aware_Preferences.DEVICE_ID);
 
         //URLs declaration
@@ -75,7 +77,7 @@ public class ESM_prompter extends Service {
     }
 
     private void generateUrl(String survey_url, int index){
-        Log.d("PIE", "Service Invocato!!");
+        Log.d("BBB", "Generate URL!!");
         try {
             ESMFactory factory = new ESMFactory();
             String uuid = UUID.randomUUID().toString();

@@ -158,31 +158,76 @@ public class Aware_Client extends Aware_Activity implements SharedPreferences.On
         //////////////////////////////////////////////////////////////////////////////////////////////////
         //MY CODE
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        if (!myPrefs.getBoolean("already_set", false) && myPrefs.getBoolean("already_booted", false)){
-            Toast toast = Toast.makeText(this, "Configuration copleted!", Toast.LENGTH_LONG);
-            Log.d("AAA", Aware_Provider.Aware_Device.DEVICE_ID);
+        if(Aware.isStudy(getApplicationContext())){
+            Log.d("BBB", "Sono entrato");
+            Toast toast = Toast.makeText(this, "Configuration completed!", Toast.LENGTH_LONG);
             toast.show();
+        } else {
+            Log.d("BBB", "Sono In un contesto");
+            Toast toast = Toast.makeText(this, "Comfiguro Studio", Toast.LENGTH_LONG);
             Aware.joinStudy(getApplicationContext(), ESM_prompter.STUDY_URL);
+
+            //setto EMA
             Scheduler.Schedule emaScheduler = Scheduler.getSchedule(getApplicationContext(), "emaScheduler");
             if(emaScheduler != null ){
+                Log.d("BBB", "Rimuovo Scheduler");
                 Scheduler.removeSchedule(getApplicationContext(), "emaScheduler");
             }
 
             emaScheduler = new Scheduler.Schedule("emaScheduler");
             try{
+                Log.d("BBB", "Try");
                 emaScheduler.setActionType(Scheduler.ACTION_TYPE_SERVICE)
                         .setActionClass(getApplicationContext().getPackageName() + "/" + ESM_prompter.class.getName());
+//                emaScheduler.setActionType(Scheduler.ACTION_TYPE_SERVICE)
+//                        .setActionClass(ESM_prompter.class.getName());
 
                 for(int i =9; i<23; ++i){
                     emaScheduler.addHour(i);
                 }
-                emaScheduler.addMinute(12);
+                emaScheduler.addMinute(03);
+                Scheduler.saveSchedule(getApplicationContext(), emaScheduler);
+                Aware.startScheduler(getApplicationContext());
+            } catch (Exception e){
+                Log.d("BBB", "Catch exception E");
+
+            }
+
+            toast.show();
+        }
+        /*
+        Log.d("AAA", Boolean.toString(myPrefs.getBoolean("already_booted", false)));
+        if (!myPrefs.getBoolean("already_set", false) && myPrefs.getBoolean("already_booted", false)){
+            Log.d("BBB", "Sono entrato");
+            Toast toast = Toast.makeText(this, "Configuration completed!", Toast.LENGTH_LONG);
+            Log.d("AAA", Aware_Provider.Aware_Device.DEVICE_ID);
+            toast.show();
+            Aware.joinStudy(getApplicationContext(), ESM_prompter.STUDY_URL);
+            Scheduler.Schedule emaScheduler = Scheduler.getSchedule(getApplicationContext(), "emaScheduler");
+            if(emaScheduler != null ){
+                Log.d("BBB", "Rimuovo Scheduler");
+                Scheduler.removeSchedule(getApplicationContext(), "emaScheduler");
+            }
+
+            emaScheduler = new Scheduler.Schedule("emaScheduler");
+            try{
+                Log.d("BBB", "Try");
+                emaScheduler.setActionType(Scheduler.ACTION_TYPE_SERVICE)
+                        .setActionClass(getApplicationContext().getPackageName() + "/" + ESM_prompter.class.getName());
+//                emaScheduler.setActionType(Scheduler.ACTION_TYPE_SERVICE)
+//                        .setActionClass(ESM_prompter.class.getName());
+
+                for(int i =9; i<23; ++i){
+                    emaScheduler.addHour(i);
+                }
+                emaScheduler.addMinute(39);
                 Scheduler.saveSchedule(getApplicationContext(), emaScheduler);
                 Aware.startScheduler(getApplicationContext());
                 //TODO: device ID to retrieve
                 Toast toast2 = Toast.makeText(this, Aware.getSetting(getApplicationContext(), Aware_Preferences.DEVICE_ID), Toast.LENGTH_LONG);
                 toast2.show();
             } catch (Exception e){
+                Log.d("BBB", "Catch exception E");
 
             }
 
@@ -197,6 +242,7 @@ public class Aware_Client extends Aware_Activity implements SharedPreferences.On
                     .putBoolean("already_booted", true)
                     .commit();
         }
+        */
 
 
 
