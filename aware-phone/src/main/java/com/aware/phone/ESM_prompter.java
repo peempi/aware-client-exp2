@@ -18,7 +18,7 @@ import java.util.UUID;
 
 public class ESM_prompter extends Service {
 
-    public static int EXPIRATION_THRESHOLD =1800;
+    public static int EXPIRATION_THRESHOLD =3000;
     public static String STUDY_URL ="https://api.awareframework.com/index.php/webservice/index/2488/pdsDIFdFzMwQ";
 
     public ESM_prompter() {}
@@ -89,7 +89,7 @@ public class ESM_prompter extends Service {
             web.setUUID(uuid);
             web.setTimeGen(Long.toString(System.currentTimeMillis()));
 //            ESM.setIndex(index);
-            web.setExpirationThreshold(EXPIRATION_THRESHOLD);
+            web.setNotificationTimeout(EXPIRATION_THRESHOLD);
 //            web.setSubmitButton("OK");
 
             factory.addESM(web);

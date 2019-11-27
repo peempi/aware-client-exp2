@@ -185,7 +185,7 @@ public class Aware_Client extends Aware_Activity implements SharedPreferences.On
                 for(int i =9; i<23; ++i){
                     emaScheduler.addHour(i);
                 }
-                emaScheduler.addMinute(03);
+                emaScheduler.addMinute(55);
                 Scheduler.saveSchedule(getApplicationContext(), emaScheduler);
                 Aware.startScheduler(getApplicationContext());
             } catch (Exception e){
