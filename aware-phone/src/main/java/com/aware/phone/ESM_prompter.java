@@ -19,7 +19,7 @@ import java.util.UUID;
 public class ESM_prompter extends Service {
 
     public static int EXPIRATION_THRESHOLD =3000;
-    public static String STUDY_URL ="https://api.awareframework.com/index.php/webservice/index/2488/pdsDIFdFzMwQ";
+    public static String STUDY_URL ="https://api.awareframework.com/index.php/webservice/index/2760/9l9w6bPxHL1z";
 
     public ESM_prompter() {}
 
