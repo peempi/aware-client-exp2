@@ -140,7 +140,8 @@ public class Aware_Client extends Aware_Activity implements SharedPreferences.On
         }
         if (PERMISSIONS_OK) {
             Intent aware = new Intent(this, Aware.class);
-            startService(aware);
+            sendBroadcast(aware);
+            //startService(aware); TODO: Se non funge riattivarlo.
         }
 
         IntentFilter awarePackages = new IntentFilter();
